@@ -53,24 +53,20 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        //Metodos
-        window.CrearRegistro = function (){
-            const nombre = document.getElementById("nombre").value;
-            const edad = document.getElementById("edad").value;
+            window.crearRegistro = function () {
+                const nombre = document.getElementById("nombre").value;
+                const edad = document.getElementById("edad").value;
+                console.log(nombre, edad);
+                
+                push(
+                    ref(database, 'septimo'),
+                    {
+                        name: nombre,
+                        age: edad 
+                    }
+                );
 
-            console.log(nombre, edad);
-
-            //enviar datos a firebase
-            push(
-                ref(database, 'septimo'),
-                {
-                    name: nombre,
-                    age: edad
-                }
-
-            );
-
-        }
+            }
       </script>
 </body>
 </html>
