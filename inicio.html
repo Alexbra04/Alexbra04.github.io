@@ -60,6 +60,16 @@
 
             console.log(nombre, edad);
 
+            //enviar datos a firebase
+            push{
+                ref(database, 'septimo'),
+                {
+                    name: nombre,
+                    age: edad
+                }
+
+            };
+
 
         }
       </script>
