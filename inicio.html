@@ -61,15 +61,14 @@
             console.log(nombre, edad);
 
             //enviar datos a firebase
-            push{
+            push(
                 ref(database, 'septimo'),
                 {
                     name: nombre,
                     age: edad
                 }
 
-            };
-
+            );
 
         }
       </script>
