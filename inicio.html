@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
+    <title>CRUD con Firebase</title>
 </head>
 <body>
     <header class="cabecera">
@@ -22,51 +22,90 @@
             </div>
         </section>
     </header>
+    
     <h1>Hola Mundo</h1>
+    
     <form id="crud-form">
         <label for="nombre">Nombre:</label>
-        <input type="text" id = "nombre">
-        <label for="edad">Edad:</label>
-        <input type="number" id = "edad">
+        <input type="text" id="nombre">
+        <label for="plataforma">Plataforma:</label>
+        <input type="text" id="plataforma">
+        <label for="genero">Género:</label>
+        <input type="text" id="genero">
+        <label for="fechaLanzamiento">Fecha de Lanzamiento:</label>
+        <input type="date" id="fechaLanzamiento">
+        <label for="clasificacionEdad">Clasificación de Edad:</label>
+        <select id="clasificacionEdad">
+            <option value="Todos">Todos</option>
+            <option value="Adolescentes">Adolescentes (13+)</option>
+            <option value="Adultos">Adultos (17+)</option>
+        </select>
         <button type="button" onclick="crearRegistro()">Crear</button>
     </form>
 
+    <div id="registros">
+        <!-- Aquí se mostrarán los registros -->
+    </div>
+
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
+        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+        // Tu configuración de Firebase
         const firebaseConfig = {
-        apiKey: "AIzaSyBB4VLEuWx4O57s4dfu9ii0BWLWJT33x58",
-        authDomain: "proyectofari.firebaseapp.com",
-        databaseURL: "https://proyectofari-default-rtdb.firebaseio.com",
-        projectId: "proyectofari",
-        storageBucket: "proyectofari.appspot.com",
-        messagingSenderId: "538414020531",
-        appId: "1:538414020531:web:08051bd59c98626d6a3dc6"
+            apiKey: "AIzaSyBB4VLEuWx4O57s4dfu9ii0BWLWJT33x58",
+            authDomain: "proyectofari.firebaseapp.com",
+            databaseURL: "https://proyectofari-default-rtdb.firebaseio.com",
+            projectId: "proyectofari",
+            storageBucket: "proyectofari.appspot.com",
+            messagingSenderId: "538414020531",
+            appId: "1:538414020531:web:08051bd59c98626d6a3dc6"
         };
 
-        // Initialize Firebase
+        // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
+        const septimoRef = ref(database, 'septimo');
 
-            window.crearRegistro = function () {
-                const nombre = document.getElementById("nombre").value;
-                const edad = document.getElementById("edad").value;
-                console.log(nombre, edad);
-                
-                push(
-                    ref(database, 'septimo'),
-                    {
-                        name: nombre,
-                        age: edad 
-                    }
-                );
+        // Función para crear un nuevo registro
+        window.crearRegistro = function () {
+            const nombre = document.getElementById("nombre").value;
+            const plataforma = document.getElementById("plataforma").value;
+            const genero = document.getElementById("genero").value;
+            const fechaLanzamiento = document.getElementById("fechaLanzamiento").value;
+            const clasificacionEdad = document.getElementById("clasificacionEdad").value;
 
-            }
-      </script>
+            push(septimoRef, {
+                name: nombre,
+                platform: plataforma,
+                genre: genero,
+                releaseDate: fechaLanzamiento,
+                ageRating: clasificacionEdad 
+            });
+        }
+
+        // Función para mostrar los registros en la página
+        function mostrarRegistros(dataSnapshot) {
+            const registrosDiv = document.getElementById("registros");
+            registrosDiv.innerHTML = ""; // Limpiar contenido anterior
+
+            dataSnapshot.forEach((childSnapshot) => {
+                const registro = childSnapshot.val();
+                registrosDiv.innerHTML += `
+                    <p>Nombre: ${registro.name}</p>
+                    <p>Plataforma: ${registro.platform}</p>
+                    <p>Género: ${registro.genre}</p>
+                    <p>Fecha de Lanzamiento: ${registro.releaseDate}</p>
+                    <p>Clasificación de Edad: ${registro.ageRating}</p>
+                    <hr>
+                `;
+            });
+        }
+
+        // Observador para actualizar la página cuando se agregan o eliminan registros
+        onValue(septimoRef, (snapshot) => {
+            mostrarRegistros(snapshot);
+        });
+    </script>
 </body>
 </html>
