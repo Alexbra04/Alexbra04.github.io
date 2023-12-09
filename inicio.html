@@ -96,75 +96,34 @@
         const juegosPCRef = ref(database, 'juegosPC');
     
         // Función para crear un nuevo registro
-        window.eliminarRegistro = function (key) {
-            console.log("Eliminando registro con clave:", key);
-
-            if (confirm("¿Seguro que desea eliminar este registro?")) {
-                try {
-                    // Construir la referencia al nodo específico utilizando ref
-                    const registroRef = ref(database, `juegosPC/${key}`);
-                    console.log("Referencia al registro:", registroRef);
-
-                    // Eliminar el registro utilizando la clave
-                    remove(registroRef)
-                        .then(() => {
-                            console.log("Registro eliminado exitosamente.");
-                        })
-                        .catch((error) => {
-                            console.error("Error al intentar eliminar el registro:", error);
-                        });
-                } catch (error) {
-                    console.error("Error al construir la referencia:", error);
-                }
-            }
+        window.crearRegistro = function () {
+            const nombre = document.getElementById("nombre").value;
+            const plataforma = document.getElementById("plataforma").value;
+            const genero = document.getElementById("genero").value;
+            const fechaLanzamiento = document.getElementById("fechaLanzamiento").value;
+            const clasificacionEdad = document.getElementById("clasificacionEdad").value;
+    
+            // Push al nodo principal "juegosPC"
+            push(juegosPCRef, {
+                name: nombre,
+                platform: plataforma,
+                genre: genero,
+                releaseDate: fechaLanzamiento,
+                ageRating: clasificacionEdad 
+            });
         }
-
-
 
         // Función para editar un registro
         window.editarRegistro = function (key) {
-            const nuevoNombre = prompt("Ingrese el nuevo nombre:");
-            const nuevaPlataforma = prompt("Ingrese la nueva plataforma:");
-            const nuevoGenero = prompt("Ingrese el nuevo género:");
-            const nuevaFechaLanzamiento = prompt("Ingrese la nueva fecha de lanzamiento:");
-            const nuevaClasificacionEdad = prompt("Ingrese la nueva clasificación de edad:");
-
-            if (nuevoNombre && nuevaPlataforma && nuevoGenero && nuevaFechaLanzamiento && nuevaClasificacionEdad) {
-                // Actualizar el registro con los nuevos valores
-                const registroActualizado = {
-                    name: nuevoNombre,
-                    platform: nuevaPlataforma,
-                    genre: nuevoGenero,
-                    releaseDate: nuevaFechaLanzamiento,
-                    ageRating: nuevaClasificacionEdad 
-                };
-
-                juegosPCRef.child(key).update(registroActualizado);
-            } else {
-                alert("La edición fue cancelada o los campos están incompletos.");
-            }
+            // Implementa la lógica de edición según tus necesidades
+            console.log("Editar registro con clave:", key);
         }
 
         // Función para eliminar un registro
         window.eliminarRegistro = function (key) {
-            console.log("Eliminando registro con clave:", key);
-
-            if (confirm("¿Seguro que desea eliminar este registro?")) {
-                // Construir la referencia al nodo específico utilizando child
-                const registroRef = juegosPCRef.child(key);
-                console.log("Referencia al registro:", registroRef);
-
-                // Eliminar el registro utilizando la clave
-                remove(registroRef)
-                    .then(() => {
-                        console.log("Registro eliminado exitosamente.");
-                    })
-                    .catch((error) => {
-                        console.error("Error al intentar eliminar el registro:", error);
-                    });
-            }
+            // Elimina el registro utilizando la clave
+            remove(ref(juegosPCRef, key));
         }
-
     
         // Función para mostrar los registros en la página
         function mostrarRegistros(dataSnapshot) {
