@@ -146,22 +146,24 @@
 
         // Función para eliminar un registro
         window.eliminarRegistro = function (key) {
-        console.log("Eliminando registro con clave:", key);
+            console.log("Eliminando registro con clave:", key);
 
-        if (confirm("¿Seguro que desea eliminar este registro?")) {
-            const registroRef = ref(juegosPCRef, key);
-            console.log("Referencia al registro:", registroRef);
+            if (confirm("¿Seguro que desea eliminar este registro?")) {
+                // Construir la referencia al nodo específico utilizando child
+                const registroRef = juegosPCRef.child(key);
+                console.log("Referencia al registro:", registroRef);
 
-            // Eliminar el registro utilizando la clave
-            remove(registroRef)
-                .then(() => {
-                    console.log("Registro eliminado exitosamente.");
-                })
-                .catch((error) => {
-                    console.error("Error al intentar eliminar el registro:", error);
-                });
+                // Eliminar el registro utilizando la clave
+                remove(registroRef)
+                    .then(() => {
+                        console.log("Registro eliminado exitosamente.");
+                    })
+                    .catch((error) => {
+                        console.error("Error al intentar eliminar el registro:", error);
+                    });
+            }
         }
-    }
+
     
         // Función para mostrar los registros en la página
         function mostrarRegistros(dataSnapshot) {
