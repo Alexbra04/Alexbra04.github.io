@@ -50,7 +50,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
-
+    
         // Tu configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBB4VLEuWx4O57s4dfu9ii0BWLWJT33x58",
@@ -61,12 +61,14 @@
             messagingSenderId: "538414020531",
             appId: "1:538414020531:web:08051bd59c98626d6a3dc6"
         };
-
+    
         // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
-        const septimoRef = ref(database, 'septimo');
-
+    
+        // Referencia al nodo principal para almacenar los registros
+        const juegosPCRef = ref(database, 'juegosPC');
+    
         // Función para crear un nuevo registro
         window.crearRegistro = function () {
             const nombre = document.getElementById("nombre").value;
@@ -74,8 +76,9 @@
             const genero = document.getElementById("genero").value;
             const fechaLanzamiento = document.getElementById("fechaLanzamiento").value;
             const clasificacionEdad = document.getElementById("clasificacionEdad").value;
-
-            push(septimoRef, {
+    
+            // Push al nodo principal "juegosPC"
+            push(juegosPCRef, {
                 name: nombre,
                 platform: plataforma,
                 genre: genero,
@@ -83,12 +86,12 @@
                 ageRating: clasificacionEdad 
             });
         }
-
+    
         // Función para mostrar los registros en la página
         function mostrarRegistros(dataSnapshot) {
             const registrosDiv = document.getElementById("registros");
             registrosDiv.innerHTML = ""; // Limpiar contenido anterior
-
+    
             dataSnapshot.forEach((childSnapshot) => {
                 const registro = childSnapshot.val();
                 registrosDiv.innerHTML += `
@@ -101,9 +104,9 @@
                 `;
             });
         }
-
+    
         // Observador para actualizar la página cuando se agregan o eliminan registros
-        onValue(septimoRef, (snapshot) => {
+        onValue(juegosPCRef, (snapshot) => {
             mostrarRegistros(snapshot);
         });
     </script>
