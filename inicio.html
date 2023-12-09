@@ -111,18 +111,45 @@
                 releaseDate: fechaLanzamiento,
                 ageRating: clasificacionEdad 
             });
+
+            // Limpiar los campos después de agregar el registro
+            document.getElementById("nombre").value = "";
+            document.getElementById("plataforma").value = "";
+            document.getElementById("genero").value = "";
+            document.getElementById("fechaLanzamiento").value = "";
+            document.getElementById("clasificacionEdad").value = "Todos";
         }
 
         // Función para editar un registro
         window.editarRegistro = function (key) {
-            // Implementa la lógica de edición según tus necesidades
-            console.log("Editar registro con clave:", key);
+            const nuevoNombre = prompt("Ingrese el nuevo nombre:");
+            const nuevaPlataforma = prompt("Ingrese la nueva plataforma:");
+            const nuevoGenero = prompt("Ingrese el nuevo género:");
+            const nuevaFechaLanzamiento = prompt("Ingrese la nueva fecha de lanzamiento:");
+            const nuevaClasificacionEdad = prompt("Ingrese la nueva clasificación de edad:");
+
+            if (nuevoNombre && nuevaPlataforma && nuevoGenero && nuevaFechaLanzamiento && nuevaClasificacionEdad) {
+                // Actualizar el registro con los nuevos valores
+                const registroActualizado = {
+                    name: nuevoNombre,
+                    platform: nuevaPlataforma,
+                    genre: nuevoGenero,
+                    releaseDate: nuevaFechaLanzamiento,
+                    ageRating: nuevaClasificacionEdad 
+                };
+
+                juegosPCRef.child(key).update(registroActualizado);
+            } else {
+                alert("La edición fue cancelada o los campos están incompletos.");
+            }
         }
 
         // Función para eliminar un registro
         window.eliminarRegistro = function (key) {
-            // Elimina el registro utilizando la clave
-            remove(ref(juegosPCRef, key));
+            if (confirm("¿Seguro que desea eliminar este registro?")) {
+                // Eliminar el registro utilizando la clave
+                remove(ref(juegosPCRef, key));
+            }
         }
     
         // Función para mostrar los registros en la página
