@@ -96,29 +96,29 @@
         const juegosPCRef = ref(database, 'juegosPC');
     
         // Función para crear un nuevo registro
-        window.crearRegistro = function () {
-            const nombre = document.getElementById("nombre").value;
-            const plataforma = document.getElementById("plataforma").value;
-            const genero = document.getElementById("genero").value;
-            const fechaLanzamiento = document.getElementById("fechaLanzamiento").value;
-            const clasificacionEdad = document.getElementById("clasificacionEdad").value;
-    
-            // Push al nodo principal "juegosPC"
-            push(juegosPCRef, {
-                name: nombre,
-                platform: plataforma,
-                genre: genero,
-                releaseDate: fechaLanzamiento,
-                ageRating: clasificacionEdad 
-            });
+        window.eliminarRegistro = function (key) {
+            console.log("Eliminando registro con clave:", key);
 
-            // Limpiar los campos después de agregar el registro
-            document.getElementById("nombre").value = "";
-            document.getElementById("plataforma").value = "";
-            document.getElementById("genero").value = "";
-            document.getElementById("fechaLanzamiento").value = "";
-            document.getElementById("clasificacionEdad").value = "Todos";
+            if (confirm("¿Seguro que desea eliminar este registro?")) {
+                try {
+                    // Construir la referencia al nodo específico utilizando ref
+                    const registroRef = ref(database, `juegosPC/${key}`);
+                    console.log("Referencia al registro:", registroRef);
+
+                    // Eliminar el registro utilizando la clave
+                    remove(registroRef)
+                        .then(() => {
+                            console.log("Registro eliminado exitosamente.");
+                        })
+                        .catch((error) => {
+                            console.error("Error al intentar eliminar el registro:", error);
+                        });
+                } catch (error) {
+                    console.error("Error al construir la referencia:", error);
+                }
+            }
         }
+
 
         // Función para editar un registro
         window.editarRegistro = function (key) {
