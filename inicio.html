@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD con Firebase</title>
+    <title>CRUD con Firebase y Bootstrap</title>
+
+    <!-- Agregar las referencias a Bootstrap CSS y JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </head>
 <body>
     <header class="cabecera">
@@ -12,44 +16,66 @@
                 <a href="index.html" title="Pagina de inicio">
                    <img class="logo" src="img/logo.jpg" alt="Technologia inovando en el mundo">
                 </a>
-                <nav class="Menu2">
-                    <a href="inicio.html">Incio</a>
-                    <a href="contacto.html">Contactos</a>
-                    <a href="servicios.html">Servicios</a>
-                    <a href="ubicacion.html">Ubicación</a>
-                    <a href="galeria.html">Galeria</a>                
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="#">Menú</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarNav">
+                            <ul class="navbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="inicio.html">Inicio</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="contacto.html">Contactos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="servicios.html">Servicios</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="ubicacion.html">Ubicación</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="galeria.html">Galeria</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </nav>
             </div>
         </section>
     </header>
     
-    <h1>Hola Mundo</h1>
-    
-    <form id="crud-form">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre">
-        <label for="plataforma">Plataforma:</label>
-        <input type="text" id="plataforma">
-        <label for="genero">Género:</label>
-        <input type="text" id="genero">
-        <label for="fechaLanzamiento">Fecha de Lanzamiento:</label>
-        <input type="date" id="fechaLanzamiento">
-        <label for="clasificacionEdad">Clasificación de Edad:</label>
-        <select id="clasificacionEdad">
-            <option value="Todos">Todos</option>
-            <option value="Adolescentes">Adolescentes (13+)</option>
-            <option value="Adultos">Adultos (17+)</option>
-        </select>
-        <button type="button" onclick="crearRegistro()">Crear</button>
-    </form>
+    <div class="container mt-5">
+        <h1 class="mb-4">Hola Mundo</h1>
+        
+        <form id="crud-form">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" class="form-control">
+            <label for="plataforma">Plataforma:</label>
+            <input type="text" id="plataforma" class="form-control">
+            <label for="genero">Género:</label>
+            <input type="text" id="genero" class="form-control">
+            <label for="fechaLanzamiento">Fecha de Lanzamiento:</label>
+            <input type="date" id="fechaLanzamiento" class="form-control">
+            <label for="clasificacionEdad">Clasificación de Edad:</label>
+            <select id="clasificacionEdad" class="form-control">
+                <option value="Todos">Todos</option>
+                <option value="Adolescentes">Adolescentes (13+)</option>
+                <option value="Adultos">Adultos (17+)</option>
+            </select>
+            <button type="button" onclick="crearRegistro()" class="btn btn-primary mt-3">Crear</button>
+        </form>
 
-    <div id="registros">
-        <!-- Aquí se mostrarán los registros -->
+        <div id="registros" class="mt-4">
+            <!-- Aquí se mostrarán los registros -->
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
     
         // Tu configuración de Firebase
         const firebaseConfig = {
@@ -86,6 +112,18 @@
                 ageRating: clasificacionEdad 
             });
         }
+
+        // Función para editar un registro
+        window.editarRegistro = function (key) {
+            // Implementa la lógica de edición según tus necesidades
+            console.log("Editar registro con clave:", key);
+        }
+
+        // Función para eliminar un registro
+        window.eliminarRegistro = function (key) {
+            // Elimina el registro utilizando la clave
+            remove(ref(juegosPCRef, key));
+        }
     
         // Función para mostrar los registros en la página
         function mostrarRegistros(dataSnapshot) {
@@ -93,14 +131,21 @@
             registrosDiv.innerHTML = ""; // Limpiar contenido anterior
     
             dataSnapshot.forEach((childSnapshot) => {
+                const key = childSnapshot.key;
                 const registro = childSnapshot.val();
+    
                 registrosDiv.innerHTML += `
-                    <p>Nombre: ${registro.name}</p>
-                    <p>Plataforma: ${registro.platform}</p>
-                    <p>Género: ${registro.genre}</p>
-                    <p>Fecha de Lanzamiento: ${registro.releaseDate}</p>
-                    <p>Clasificación de Edad: ${registro.ageRating}</p>
-                    <hr>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Nombre: ${registro.name}</h5>
+                            <p class="card-text">Plataforma: ${registro.platform}</p>
+                            <p class="card-text">Género: ${registro.genre}</p>
+                            <p class="card-text">Fecha de Lanzamiento: ${registro.releaseDate}</p>
+                            <p class="card-text">Clasificación de Edad: ${registro.ageRating}</p>
+                            <button type="button" onclick="editarRegistro('${key}')" class="btn btn-warning">Editar</button>
+                            <button type="button" onclick="eliminarRegistro('${key}')" class="btn btn-danger">Eliminar</button>
+                        </div>
+                    </div>
                 `;
             });
         }
