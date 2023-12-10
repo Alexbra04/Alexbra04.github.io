@@ -184,12 +184,12 @@
             snapshot.forEach((childSnapshot) => {
                 const registro = childSnapshot.val();
                 const li = document.createElement('li');
-                li.textContent = `Nombre: ${registro.name}, Plataforma: ${registro.platform}, Género: ${registro.genre}, Fecha de Lanzamiento: ${registro.releaseDate}, Clasificación de Edad: ${registro.ageRating}`;
+                li.textContent = `Nombre: ${registro.nombre}, Plataforma: ${registro.plataforma}, Género: ${registro.genero}, Fecha de Lanzamiento: ${registro.fechaLanzamiento}, Clasificación de Edad: ${registro.clasificacionEdad}`;
 
                 // Botones para editar y eliminar
                 const btnEditar = document.createElement('button');
                 btnEditar.textContent = 'Editar';
-                btnEditar.addEventListener('click', () => editarRegistro(childSnapshot.key, registro.name, registro.platform, registro.genre, registro.releaseDate, registro.ageRating));
+                btnEditar.addEventListener('click', () => editarRegistro(childSnapshot.key, registro.nombre, registro.plataforma, registro.genero, registro.fechaLanzamiento, registro.clasificacionEdad));
 
                 const btnEliminar = document.createElement('button');
                 btnEliminar.textContent = 'Eliminar';
@@ -211,11 +211,11 @@
 
             if (nuevoNombre !== null && nuevaPlataforma !== null && nuevoGenero !== null && nuevaFechaLanzamiento !== null && nuevaClasificacionEdad !== null) {
                 update(ref(database, `juegosPC/${key}`), {
-                    name: nuevoNombre,
-                    platform: nuevaPlataforma,
-                    genre: nuevoGenero,
-                    releaseDate: nuevaFechaLanzamiento,
-                    ageRating: nuevaClasificacionEdad
+                    nombre: nuevoNombre,
+                    plataforma: nuevaPlataforma,
+                    genero: nuevoGenero,
+                    fechaLanzamiento: nuevaFechaLanzamiento,
+                    clasificacionEdad: nuevaClasificacionEdad
                 });
             }
         }
