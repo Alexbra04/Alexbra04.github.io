@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD con Firebase</title>
+    <title>Juegos de PC</title>
     <!-- Agrega Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
@@ -12,26 +12,36 @@
         <section id="texto1" >
             <div class="contenedor">
                 <a href="index.html" title="Pagina de inicio">
-                   <img class="logo" src="img/logo.jpg" alt="Technologia inovando en el mundo">
+                   <img class="logo" src="img/logo.jpg" alt="Technologia innovando en el mundo">
                 </a>
                 <nav class="Menu2">
-                    <a href="inicio.html">Incio</a>
+                    <a href="inicio.html">Inicio</a>
                     <a href="contacto.html">Contactos</a>
                     <a href="servicios.html">Servicios</a>
                     <a href="ubicacion.html">Ubicación</a>
-                    <a href="galeria.html">Galeria</a>                
+                    <a href="galeria.html">Galería</a>                
                 </nav>
             </div>
         </section>
     </header>
     
-    <h1>Hola Mundo</h1>
+    <h1>Juegos de PC</h1>
 
     <form id="crud-form">
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre">
-        <label for="edad">Edad:</label>
-        <input type="number" id="edad">
+        <label for="plataforma">Plataforma:</label>
+        <input type="text" id="plataforma">
+        <label for="genero">Género:</label>
+        <input type="text" id="genero">
+        <label for="fechaLanzamiento">Fecha de Lanzamiento:</label>
+        <input type="date" id="fechaLanzamiento">
+        <label for="clasificacionEdad">Clasificación de Edad:</label>
+        <select id="clasificacionEdad">
+            <option value="Todos">Todos</option>
+            <option value="Adolescentes">Adolescentes (13+)</option>
+            <option value="Adultos">Adultos (17+)</option>
+        </select>
         <button type="button" onclick="crearRegistro()">Crear</button>
     </form>
 
@@ -47,13 +57,13 @@
     <script type="module">
         // Tu configuración de Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyBMJsVpnbOwVOiVNbTZScZdet9qlGigDL0",
-            authDomain: "conexion-8ec0d.firebaseapp.com",
-            databaseURL: "https://conexion-8ec0d-default-rtdb.firebaseio.com",
-            projectId: "conexion-8ec0d",
-            storageBucket: "conexion-8ec0d.appspot.com",
-            messagingSenderId: "679910299749",
-            appId: "1:679910299749:web:9800b464879628b4850e8c"
+            apiKey: "AIzaSyBB4VLEuWx4O57s4dfu9ii0BWLWJT33x58",
+            authDomain: "proyectofari.firebaseapp.com",
+            databaseURL: "https://proyectofari-default-rtdb.firebaseio.com",
+            projectId: "proyectofari",
+            storageBucket: "proyectofari.appspot.com",
+            messagingSenderId: "538414020531",
+            appId: "1:538414020531:web:08051bd59c98626d6a3dc6"
         };
       
         // Inicializar Firebase y base de datos
@@ -61,34 +71,53 @@
         const database = getDatabase(app);
 
         // Referencia al nodo principal para almacenar los registros
-        const septimoRef = ref(database, 'septimo');
+        const juegosPCRef = ref(database, 'juegosPC');
 
         // Función para crear un nuevo registro
         window.crearRegistro = function () {
             const nombre = document.getElementById("nombre").value;
-            const edad = document.getElementById("edad").value;
+            const plataforma = document.getElementById("plataforma").value;
+            const genero = document.getElementById("genero").value;
+            const fechaLanzamiento = document.getElementById("fechaLanzamiento").value;
+            const clasificacionEdad = document.getElementById("clasificacionEdad").value;
 
-            // Push al nodo principal "septimo"
-            push(septimoRef, {
+            // Push al nodo principal "juegosPC"
+            push(juegosPCRef, {
                 name: nombre,
-                age: edad 
+                platform: plataforma,
+                genre: genero,
+                releaseDate: fechaLanzamiento,
+                ageRating: clasificacionEdad 
             });
+
+            // Limpiar los campos después de agregar
+            document.getElementById('nombre').value = '';
+            document.getElementById('plataforma').value = '';
+            document.getElementById('genero').value = '';
+            document.getElementById('fechaLanzamiento').value = '';
+            document.getElementById('clasificacionEdad').value = 'Todos';
         }
 
-        // Función para mostrar los registros en la página
-        function mostrarRegistros(dataSnapshot) {
+        // Escuchar cambios en la base de datos y actualizar la lista
+        onValue(juegosPCRef, (snapshot) => {
             const listaRegistros = document.getElementById('lista-registros');
             listaRegistros.innerHTML = '';
 
-            dataSnapshot.forEach((childSnapshot) => {
+            snapshot.forEach((childSnapshot) => {
                 const registro = childSnapshot.val();
                 const li = document.createElement('li');
-                li.textContent = `${registro.name}, ${registro.age} años`;
+                li.textContent = `
+                    Nombre: ${registro.name}
+                    Plataforma: ${registro.platform}
+                    Género: ${registro.genre}
+                    Fecha de Lanzamiento: ${registro.releaseDate}
+                    Clasificación de Edad: ${registro.ageRating}
+                `;
 
                 // Botones para editar y eliminar
                 const btnEditar = document.createElement('button');
                 btnEditar.textContent = 'Editar';
-                btnEditar.addEventListener('click', () => editarRegistro(childSnapshot.key, registro.name, registro.age));
+                btnEditar.addEventListener('click', () => editarRegistro(childSnapshot.key, registro.name, registro.platform, registro.genre, registro.releaseDate, registro.ageRating));
 
                 const btnEliminar = document.createElement('button');
                 btnEliminar.textContent = 'Eliminar';
@@ -99,21 +128,22 @@
 
                 listaRegistros.appendChild(li);
             });
-        }
-
-        // Observador para actualizar la página cuando se agregan o eliminan registros
-        onValue(septimoRef, (snapshot) => {
-            mostrarRegistros(snapshot);
         });
 
-        window.editarRegistro = function (key, nombre, edad) {
+        window.editarRegistro = function (key, nombre, plataforma, genero, fechaLanzamiento, clasificacionEdad) {
             const nuevoNombre = prompt('Editar nombre:', nombre);
-            const nuevaEdad = prompt('Editar edad:', edad);
+            const nuevaPlataforma = prompt('Editar plataforma:', plataforma);
+            const nuevoGenero = prompt('Editar género:', genero);
+            const nuevaFechaLanzamiento = prompt('Editar fecha de lanzamiento:', fechaLanzamiento);
+            const nuevaClasificacionEdad = prompt('Editar clasificación de edad:', clasificacionEdad);
 
-            if (nuevoNombre !== null && nuevaEdad !== null) {
-                update(ref(septimoRef, key), {
+            if (nuevoNombre !== null && nuevaPlataforma !== null && nuevoGenero !== null && nuevaFechaLanzamiento !== null && nuevaClasificacionEdad !== null) {
+                update(ref(juegosPCRef, key), {
                     name: nuevoNombre,
-                    age: nuevaEdad
+                    platform: nuevaPlataforma,
+                    genre: nuevoGenero,
+                    releaseDate: nuevaFechaLanzamiento,
+                    ageRating: nuevaClasificacionEdad
                 });
             }
         }
@@ -122,7 +152,7 @@
             const confirmacion = confirm('¿Seguro que desea eliminar este registro?');
 
             if (confirmacion) {
-                remove(ref(septimoRef, key));
+                remove(ref(juegosPCRef, key));
             }
         }
     </script>
